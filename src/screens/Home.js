@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react'
 import Constants from 'expo-constants'
 import { Divider } from 'react-native-elements'
 
-import HeaderTabs from '../components/HeaderTabs'
-import SearchBar from '../components/SearchBar'
-import Categories from '../components/Categories'
-import BottomTabs from '../components/BottomTabs'
-import RestaurantItems, { localRestaurants } from '../components/RestaurantItems'
+import HeaderTabs from '../components/home/HeaderTabs'
+import SearchBar from '../components/home/SearchBar'
+import Categories from '../components/home/Categories'
+import BottomTabs from '../components/home/BottomTabs'
+import RestaurantItems, { localRestaurants } from '../components/home/RestaurantItems'
 
-const Home = () => {
+const Home = ({navigation}) => {
    const [restaurantData, setRestaurantData] = useState(localRestaurants)
 	const [city, setCity] = useState("St Petersburg, FL")
 	const [activeTab, setActiveTab] = useState('Delivery')
@@ -48,7 +48,7 @@ const Home = () => {
          </View>
          <ScrollView showsVerticalScrollIndicator='false'>
             <Categories />
-            <RestaurantItems restaurantData={restaurantData}/>
+            <RestaurantItems restaurantData={restaurantData} navigation={navigation}/>
          </ScrollView>
 			<Divider width={1}/>
 			<BottomTabs />
