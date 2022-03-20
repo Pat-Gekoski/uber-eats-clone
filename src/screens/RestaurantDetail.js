@@ -10,8 +10,8 @@ const RestaurantDetail = ({route, navigation}) => {
 	 <View style={{flex: 1}}>
 		<About route={route}/>
 		<Divider width={1.8} style={{marginVertical: 20}} />
-		<MenuItems />
-		<ViewCart navigation={navigation} resaurantName={route.params.name} />
+		<MenuItems restaurantName={route.params.name}/>
+		<ViewCart navigation={navigation} restaurantName={route.params.name} />
 	 </View>
   )
 }
