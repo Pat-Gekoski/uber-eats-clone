@@ -4,40 +4,9 @@ import { Divider } from 'react-native-elements'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import { useDispatch, useSelector } from 'react-redux'
 
-const foods = [
-   {
-		restaurantName: 'The Eatery',
-      title: 'BBQ Butt Roast',
-      description: `It's a fucking burger stupid! Do you really need a description?`,
-      price: '$12.99',
-		image: 'https://www.google.com/some-photo.jpg'
-   },
-   {
-		restaurantName: 'The Eatery',
-      title: 'BBQ Burger',
-      description: `It's a fucking burger stupid! Do you really need a description?`,
-      price: '$12.99',
-		image: 'https://www.google.com/some-photo.jpg'
-   },
-   {
-		restaurantName: 'The Eatery',
-      title: 'Fried Pickles',
-      description: `It's a fucking burger stupid! Do you really need a description?`,
-      price: '$12.99',
-		image: 'https://www.google.com/some-photo.jpg'
-   },
-   {
-		restaurantName: 'The Eatery',
-      title: 'Salmon',
-      description: `It's a fucking burger stupid! Do you really need a description?`,
-      price: '$12.99',
-		image: 'https://www.google.com/some-photo.jpg'
-   }
-]
-
-const MenuItems = ({ restaurantName }) => {
+const MenuItems = ({ restaurantName, hideCheckbox = false, foods }) => {
    const dispatch = useDispatch()
-	const cartItems = useSelector(state => state.cart.selectedItems)
+   const cartItems = useSelector((state) => state.cart.selectedItems)
 
    const selectItem = (item, checkboxValue) => {
       if (checkboxValue) {
@@ -47,38 +16,43 @@ const MenuItems = ({ restaurantName }) => {
       }
    }
 
-	const isFoodInCart = (food, restaurantName) => {
-		if (!cartItems || cartItems.length <= 0) return false
+   const isFoodInCart = (food, restaurantName) => {
+      if (!cartItems || cartItems.length <= 0) return false
 
-		console.log('cart', cartItems)
+      const resaurantItemsInCart = cartItems.find(
+         (item) => item.restaurantName === restaurantName
+      )?.items
+      if (!resaurantItemsInCart) return false
 
-		const resaurantItemsInCart = cartItems.find(item => item.restaurantName === restaurantName)?.items
-		if (!resaurantItemsInCart) return false
+      for (let item of resaurantItemsInCart) {
+         if (item.title === food.title) return true
+      }
 
-		for (let item of resaurantItemsInCart){
-			if (item.title === food.title) return true
-		}
-		
-		return false
-	}
+      return false
+   }
 
    return (
-      <ScrollView showsVerticalScrollIndicator='false' style={{ flexGrow: 1 }}>
+      <ScrollView showsVerticalScrollIndicator='false'>
          {foods.map((food, index) => (
             <View key={index}>
                <View style={styles.menuItemStyle}>
-                  <BouncyCheckbox
-                     iconStyle={{ borderColor: 'lightgray', borderRadius: 0 }}
-                     fillColor='green'
-                     onPress={(checked) => selectItem({...food, restaurantName: restaurantName }, checked)}
-							isChecked={isFoodInCart(food, restaurantName)}
-                  />
+                  {!hideCheckbox && (
+                     <BouncyCheckbox
+                        iconStyle={{ borderColor: 'lightgray', borderRadius: 0 }}
+                        fillColor='green'
+                        onPress={(checked) =>
+                           selectItem({ ...food, restaurantName: restaurantName }, checked)
+                        }
+                        isChecked={isFoodInCart(food, restaurantName)}
+                     />
+                  )}
                   <FoodInfo food={food} />
                   <FoodImage food={food} />
                </View>
                <Divider width={0.5} orientation='vertical' style={{ marginHorizontal: 20 }} />
             </View>
          ))}
+			{!hideCheckbox && <View style={{height: 140}} />}
       </ScrollView>
    )
 }
@@ -86,13 +60,13 @@ const MenuItems = ({ restaurantName }) => {
 const FoodInfo = ({ food }) => (
    <View style={{ width: 240, justifyContent: 'space-evenly' }}>
       <Text style={styles.titleStyle}>{food.title}</Text>
-      <Text>{food.description}</Text>
+      <Text numberOfLines={3}>{food.description}</Text>
       <Text>{food.price}</Text>
    </View>
 )
 
 const FoodImage = ({ food }) => (
-   <View>
+   <View style={{marginLeft: 10}}>
       <Image source={{ uri: food.image }} style={{ width: 100, height: 100, borderRadius: 8 }} />
    </View>
 )
